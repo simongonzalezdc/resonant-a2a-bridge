@@ -1,0 +1,94 @@
+{
+  "id": "addon.a2a-bridge",
+  "name": "A2A Bridge (ResonantOS delegation)",
+  "version": "0.1.0",
+  "author": "KyaniteLabs",
+  "category": "tool",
+  "sdkVersion": "0.1.0",
+  "description": "Exposes the local ResonantOS opencode delegation as an A2A 0.2.5 JSON-RPC server on loopback (127.0.0.1:4898). Any A2A client submits a text mission with message/send, polls tasks/get for the lifecycle, and reads the result artifact verbatim when completed; tasks/cancel latches canceled locally. Serve-only: the bridge never dials beyond 127.0.0.1, reuses the browser-first bridge's existing capability tokens (operator-provided), and adds no new capability surface.",
+  "runtimeType": "local-service",
+  "surfaces": [],
+  "requestedCapabilities": [
+    {
+      "capability": "network",
+      "granted": false,
+      "scope": "self",
+      "revocationBehavior": "hard-stop"
+    }
+  ],
+  "provenance": {
+    "tier": "sideloaded-unverified",
+    "verificationState": "unverified",
+    "signed": false
+  },
+  "runtimeIsolation": {
+    "boundary": "host-mediated-service",
+    "supportsDegradedMode": true,
+    "requiresReviewedGrant": true
+  },
+  "grantPresets": [
+    {
+      "id": "a2a-bridge-local",
+      "label": "Local A2A delegation bridge",
+      "description": "Allow the bridge to serve A2A JSON-RPC on 127.0.0.1:4898 and forward delegations to the browser-first bridge on loopback (127.0.0.1:47773) using the operator-provided RESONANTOS_BROWSER_FIRST_* capability tokens. Serve-only: no destinations beyond loopback are dialed.",
+      "grants": [
+        {
+          "capability": "network",
+          "granted": true,
+          "scope": "self",
+          "revocationBehavior": "hard-stop"
+        }
+      ]
+    }
+  ],
+  "providerRequirements": {
+    "sharedProfiles": [],
+    "supportsPrivateCredentials": true
+  },
+  "systemSlots": [],
+  "archiveIntegration": {
+    "readScopes": [],
+    "intakeWriteScopes": [],
+    "canRequestIngest": false,
+    "canWriteKnowledgePages": false
+  },
+  "health": {
+    "strategy": "http-json-status"
+  },
+  "service": {
+    "protocol": "http-json",
+    "entrypoint": "http://127.0.0.1:4898",
+    "healthCommand": "a2abridge.status"
+  },
+  "tools": [
+    {
+      "name": "a2abridge.status",
+      "description": "Health probe for the bridge: reports service version, the pinned A2A protocol version, the delegation target, and the served JSON-RPC method allowlist. Served on GET /health of the entrypoint (and POST /health with this method envelope); the A2A JSON-RPC surface at POST / intentionally accepts only message/send, tasks/get, and tasks/cancel.",
+      "requiredCapabilities": ["network"],
+      "inputSchema": { "type": "object", "properties": {}, "additionalProperties": false },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "ok": { "type": "boolean" },
+          "addon": { "type": "string" },
+          "version": { "type": "string" },
+          "a2a": { "type": "string" },
+          "target": { "type": "string" },
+          "methods": { "type": "array", "items": { "type": "string" } },
+          "stateMap": { "type": "object" },
+          "tasksTracked": { "type": "integer" },
+          "cardUrl": { "type": "string" }
+        }
+      },
+      "audit": { "logRequest": true, "logResult": true, "artifactTypes": ["log"] },
+      "requiresHumanApproval": false
+    }
+  ],
+  "installHooks": {
+    "onInstall": "start-a2a-bridge-service"
+  },
+  "compatibility": {
+    "shellVersion": "^0.1.0",
+    "platforms": ["macOS", "linux", "windows"]
+  }
+}
