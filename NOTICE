@@ -1,0 +1,28 @@
+addon.a2a-bridge — ResonantOS add-on
+Copyright 2026 Kyanite Labs
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License. You may obtain a copy
+of the License at http://www.apache.org/licenses/LICENSE-2.0.
+
+This add-on is an original bridge. It vendors nothing, but depends on and
+attributions are owed to:
+
+  * ResonantOS browser-first (2.0.0-alpha) delegation pattern — the host
+    routes this bridge calls (/addons/delegate,
+    /opencode/delegation/{start,status,artifact,cancel}), the governed
+    delegation packet and its human-approval boundary, and the
+    capability-token scheme (RESONANTOS_BROWSER_FIRST_* env names) this
+    bridge reuses but never re-mints. Copyright their respective holders.
+
+  * A2A task wire semantics (tasks/get, tasks/cancel, -32001/-32002 task
+    error codes) — per the vendored A2A SDK as seen in kinocut (c7ce91e),
+    Apache-2.0.
+
+  * Agent-card shape — the production A2A agent-card reference (field shape
+    only; every identity value on the served card is this bridge's own).
+
+The agent card, all identity content, the cancel latch, the state map, the
+opaque-taskId privacy boundary, and the protective limits (256 KB body,
+24,000-char mission, 1-concurrent, 6/hour, 64-task table, submitted
+deadline) are original to this add-on.
