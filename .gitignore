@@ -1,5 +1,0 @@
-# Internal consensus planning document — not part of the distribution.
-PRD.md
-
-# Runtime state (the bridge itself persists nothing; this is hygiene)
-var/
