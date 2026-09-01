@@ -792,7 +792,7 @@ export function createBridgeCore({
     };
   }
 
-  return { handleRpc, statusPayload, tasks, rateWindow };
+  return { handleRpc, statusPayload, tasks, rateWindow, getBridgeToken: () => tokens.bridge };
 }
 
 // -- HTTP layer -------------------------------------------------------------------
@@ -822,6 +822,17 @@ export function buildServer({ core }) {
         finish(404);
       }
       return;
+    }
+
+    // Inbound auth (E2E finding: any local process could submit delegations).
+    if (req.method === "POST" && req.url === "/") {
+      const presented = String(req.headers["authorization"] ?? "").replace(/^Bearer\s+/i, "");
+      const expected = core?.getBridgeToken?.() ?? "";
+      if (!expected || presented !== expected) {
+        reply(res, 401, { jsonrpc: "2.0", id: null, error: { code: -32600, message: "Unauthorized: bridge token required" } });
+        finish(401);
+        return;
+      }
     }
 
     if (req.method === "POST" && req.url === "/health") {
