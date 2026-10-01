@@ -1,0 +1,27 @@
+# A2A Bridge — ResonantOS add-on (agent2agent)
+
+Expose the ResonantOS opencode delegation as an A2A 0.2.5 JSON-RPC server on
+loopback: any A2A client can submit a text mission to the local opencode agent
+and retrieve the result artifact, using the standard A2A task lifecycle,
+without touching any other ResonantOS surface. Serve-only with operator-supplied
+capability tokens; the bridge never dials beyond 127.0.0.1, and external
+actions stay governed by the delegation packet's own boundary.
+
+## Canonical links
+
+- This repo: https://github.com/simongonzalezdc/resonant-a2a-bridge
+- Wire-format spec (A2A protocol): https://github.com/a2aproject/A2A
+
+## Key facts
+
+- ResonantOS 2.0.0-alpha add-on; validator: 0 errors / 0 warnings
+- License: Apache-2.0
+- Implements A2A 0.2.5: agent card, message/send, tasks/get, tasks/cancel;
+  streaming and push notifications honestly declared false
+- Loopback bind only; artifacts returned verbatim, never mutated or persisted
+
+Relationship: community gift by Kyanite Labs for ResonantOS — the delegation
+surface it exposes is ResonantOS's own; the A2A protocol spec
+(https://github.com/a2aproject/A2A) governs the wire format; this bridge is a
+non-canonical exposure layer, and where anything here disagrees with either,
+they win.
